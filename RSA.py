@@ -1,18 +1,15 @@
-import math
+# import math
 import sys
 
 from Crypto.Util.number import inverse, getPrime
 
 
-def alphabet():
-
-
-def keygen(p: int, q: int) -> tuple:
-    n = p * q
-    # e = getPrime(p.bit_length())
-    e = 9007
-    d = inverse(e, (p-1)*(q-1))
-    return e, d, n
+def keygen(x: int, y: int) -> tuple:
+    xy = x * y
+    ex = getPrime(x.bit_length())
+    # ex = 9007
+    dy = inverse(ex, (x-1)*(y-1))
+    return ex, dy, xy
 
 
 def setPQ() -> int:
@@ -20,90 +17,93 @@ def setPQ() -> int:
         index1 = sys.argv.index('-pq') + 1
         index2 = sys.argv.index('-pq') + 2
 
-        p = int(sys.argv[index1])
-        q = int(sys.argv[index2])
+        pe = int(sys.argv[index1])
+        qu = int(sys.argv[index2])
     else:
-        p = getPrime(30)
-        q = getPrime(30)
+        pe = getPrime(30)
+        qu = getPrime(30)
 
-    return p, q
+    return pe, qu
 
 
-def crypto(message: int, e: int, n: int) -> int:
-    encrypted = pow(message, e, n)
+def crypto(mes: int, exponent: int, mods: int) -> int:
+    enc = pow(mes, exponent, mods)
     # decrypted = pow(encrypted, d, n)
-    return encrypted
+    return int(enc)
 
 
-# n = p * q
 def setMessage() -> int:
     if '-m' in sys.argv:
         index = sys.argv.index('-m') + 1
-        message = str(sys.argv[index])
+        m = str(sys.argv[index])
+        print(m)
     else:
-        message = 'cat'
+        m = 'cat'
 
-    message = convertToInt(message)
-    return message
-
-
-def convertToInt(message: str) -> int:
-    s = ''.join(str(ord(c)) for c in message)
-    return int(s)
+    # message = convertToInt(message)
+    return m
 
 
-def convertToString()
+def convertToInt(messageS: str) -> int:
+    # s = ''.join(str(ord(c)) for c in message)
+    st = ''
+    for c in messageS:
+        st += str(ord(c) * 1000)
+
+    print(int(st))
+    return int(st)
+
+# cat 99000 97000 116000
+#  9900097000119000
 
 
-str()
-return
+def convertToString(s: int):
+    print("INT: " + str(s))
+
+    text = ''
+    divider = 1000
+
+    while s > 0:
+        s = int(s/1000)
+        mod = int(s % 1000) < 100
+        text = chr(int(s % 1000)) + text
+
+        divider = 100 if mod else 1000
+        s = int(s/divider)
+
+    return text
 
 
-def printOut(n: int, e: int, d: int, message: int, encrypted: int, decrypted: int):
-    print("PQ is: " + str(n))
-    print("public key e is: " + str(e))
-    print("private key d is: " + str(d))
-    print("Message : " + str(message))
-    print("Message Encrypted: " + str(encrypted))
-    print("Decrypted : " + str(decrypted))
+def printOut(es, des, messageG, encryptedT, decryptedT):
+    print("public key e is: " + str(es))
+    print("private key d is: " + str(des))
+    print("Message : " + str(messageG))
+    print("Message Encrypted: " + str(encryptedT))
+    print("Decrypted : " + str(decryptedT))
     return
 
 
-p, q = setPQ()
-message = setMessage()
-e, d, n = keygen(p, q)
-encrypted = crypto(message, e, n)
-decrypted = crypto(encrypted, d, n)
-printOut(n, e, d, message, encrypted, decrypted)
+def main():
+    p, q = setPQ()
+    message = setMessage()
+    message = convertToInt(message)
+    print("message is: " + str(message))
+    e, d, n = keygen(p, q)
+    encrypted = crypto(message, e, n)
+    print("encrypted 1st: " + str(encrypted))
+    decrypted = crypto(encrypted, d, n)
+    print("decrypted 1st: " + str(decrypted))
+    decrypted = convertToString(decrypted)
+    printOut(e, d, message, encrypted, decrypted)
 
 
-# # Python3 program for the above approach
+if __name__ == "__main__":
+    main()
 
-# # Function to convert string to
-# # integer without using functions
-# def convert(s):
 
-#     # Initialize a variable
-#     num = 0
-#     n = len(s)
-
-#     # Iterate till length of the string
-#     for i in s:
-
-#         # Subtract 48 from the current digit
-#         num = num * 10 + (ord(i) - 48)
-
+# print(oct(101))
 #     # Print the answer
-#     print(num)
 
-
-# # Driver code
-# if __name__ == '__main__':
 
 #     # Given string of number
 #     s = "123"
-
-#     # Function Call
-#     convert(s)
-
-# # This code is contributed by Shivam Singh
