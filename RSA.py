@@ -4,106 +4,89 @@ import sys
 from Crypto.Util.number import inverse, getPrime
 
 
-def keygen(x: int, y: int) -> tuple:
-    xy = x * y
-    ex = getPrime(x.bit_length())
-    # ex = 9007
-    dy = inverse(ex, (x-1)*(y-1))
-    return ex, dy, xy
+def keygen(p: int, q: int):
+    # Calculate n
+    n = p * q
+    # Get a large prime for exponent
+    e = getPrime(1024)
+    # e = 9007
+    # Calculate the modular inverse for e with p and q
+    d = inverse(e, (p-1)*(q-1))
+    return e, d, n
 
 
-def setPQ() -> int:
-    if '-pq' in sys.argv:
-        index1 = sys.argv.index('-pq') + 1
-        index2 = sys.argv.index('-pq') + 2
-
-        pe = int(sys.argv[index1])
-        qu = int(sys.argv[index2])
-    else:
-        pe = getPrime(30)
-        qu = getPrime(30)
-
-    return pe, qu
+def setPQ():
+    p = getPrime(512)
+    q = getPrime(512)
+    return p, q
 
 
-def crypto(mes: int, exponent: int, mods: int) -> int:
-    enc = pow(mes, exponent, mods)
-    # decrypted = pow(encrypted, d, n)
-    return int(enc)
+def crypto(message: int, exponent: int, mod: int):
+    # Encrypt/Decrypt with modular exponent
+    crypted = pow(message, exponent, mod)
+
+    return int(crypted)
 
 
-def setMessage() -> int:
+def setMessage():
+    # Read message from arguments sent to the program
     if '-m' in sys.argv:
         index = sys.argv.index('-m') + 1
-        m = str(sys.argv[index])
-        print(m)
+        message = str(sys.argv[index])
     else:
-        m = 'cat'
+        message = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
+    # convert the plain text to integer form
+    message = convertToInt(message)
+    return message
 
-    # message = convertToInt(message)
-    return m
 
+def convertToInt(message: str):
+    text = ''
+    for c in message:
+        text += str(ord(c) * 1000)
 
-def convertToInt(messageS: str) -> int:
-    # s = ''.join(str(ord(c)) for c in message)
-    st = ''
-    for c in messageS:
-        st += str(ord(c) * 1000)
-
-    print(int(st))
-    return int(st)
-
-# cat 99000 97000 116000
-#  9900097000119000
+    return int(text)
 
 
 def convertToString(s: int):
-    print("INT: " + str(s))
 
     text = ''
     divider = 1000
 
     while s > 0:
-        s = int(s/1000)
+        s //= 1000
         mod = int(s % 1000) < 100
         text = chr(int(s % 1000)) + text
-
         divider = 100 if mod else 1000
-        s = int(s/divider)
+        s //= divider
 
     return text
 
 
-def printOut(es, des, messageG, encryptedT, decryptedT):
-    print("public key e is: " + str(es))
-    print("private key d is: " + str(des))
-    print("Message : " + str(messageG))
-    print("Message Encrypted: " + str(encryptedT))
-    print("Decrypted : " + str(decryptedT))
+def printOut(e, d, message, encrypted, decrypted):
+    print("Public key e is: " + str(e))
+    print("")
+    print("Private key d is: " + str(d))
+    print("")
+    print("Message: " + str(message))
+    print("")
+    print("Message Encrypted: " + str(encrypted))
+    print("")
+    print("Decrypted message: " + str(decrypted))
     return
 
 
 def main():
-    p, q = setPQ()
-    message = setMessage()
-    message = convertToInt(message)
-    print("message is: " + str(message))
+    p, q = setPQ()  # set primes for p and q (512bits)
+    message = setMessage()  # read message from commandline
+    # generate public key e, calculate private key d and n = p * q
     e, d, n = keygen(p, q)
-    encrypted = crypto(message, e, n)
-    print("encrypted 1st: " + str(encrypted))
-    decrypted = crypto(encrypted, d, n)
-    print("decrypted 1st: " + str(decrypted))
+    encrypted = crypto(message, e, n)  # encrypt the incoming message
+    decrypted = crypto(encrypted, d, n)  # decrypt the encrypted message
+    # convert the encrypted message back to a string
     decrypted = convertToString(decrypted)
     printOut(e, d, message, encrypted, decrypted)
 
 
 if __name__ == "__main__":
     main()
-
-
-# print(oct(101))
-#     # Print the answer
-
-
-#     # Given string of number
-#     s = "123"
